@@ -1,0 +1,20 @@
+# Virtual environments
+venv*/
+.venv/
+
+# Python junk
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Secrets (the theme config.toml stays tracked)
+.streamlit/secrets.toml
+.env
+
+# Data: never commit datasets (size, privacy, licensing)
+*.csv
+!sample_data/*.csv
+
+# Trained models and OS files
+*.pkl
+.DS_Store

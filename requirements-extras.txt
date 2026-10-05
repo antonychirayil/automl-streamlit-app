@@ -1,0 +1,38 @@
+# OPTIONAL extras - the automated EDA reports in section 9.
+#
+# Deliberately kept out of requirements.txt: these are heavy (and one of
+# them is fussy about Python versions), and the app is written to run
+# perfectly without them - section 9 simply tells you what to install.
+# So a failure in here can never break the core app.
+#
+#   pip install -r requirements-extras.txt
+#
+# ydata-profiling is the current name of what used to be called
+# pandas-profiling (renamed in 2023; `pip install pandas-profiling` now
+# just errors and points you here).
+#
+# The `; python_version < "3.14"` part is an "environment marker": pip
+# evaluates it and SKIPS that line on Python 3.14+ instead of failing
+# the whole install. It's here because ydata-profiling declares
+# requires-python ">=3.10,<3.14", so on Python 3.14 pip would otherwise
+# refuse the install outright. Sweetviz has no such limit and installs
+# fine either way.
+sweetviz>=2.3.3
+ydata-profiling>=4.18 ; python_version < "3.14"
+
+# Why setuptools is pinned BELOW 82 even though nothing here imports it
+# directly. ydata-profiling still does `import pkg_resources` internally,
+# and pkg_resources ships as part of setuptools. Two changes broke that:
+#
+#   1. Python 3.12 stopped seeding new virtual environments with
+#      setuptools (it used to arrive automatically alongside pip), so a
+#      fresh 3.13 venv has no pkg_resources at all.
+#   2. setuptools 82.0.0 (Feb 2026) then REMOVED pkg_resources
+#      completely - long deprecated in favour of importlib.resources
+#      and importlib.metadata.
+#
+# Together those mean a plain `pip install setuptools` grabs 82+ and you
+# STILL get "No module named 'pkg_resources'" the moment you build a
+# report. 81.0.0 is the last release that contains it, hence the cap.
+# Remove this pin once ydata-profiling stops importing pkg_resources.
+setuptools>=70,<82
